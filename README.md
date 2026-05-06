@@ -21,16 +21,21 @@ A RESTful API for managing an address book, built with **FastAPI** and **SQLite*
 ```
 address-book/
 ├── app/
-│   ├── __init__.py          # Package init
-│   ├── main.py              # FastAPI app entry point + logging config
-│   ├── database.py          # SQLAlchemy engine, session, Base
-│   ├── models.py            # ORM model: Address table
-│   ├── schemas.py           # Pydantic schemas for validation & serialization
-│   ├── crud.py              # Database operations (Repository pattern)
-│   ├── utils.py             # Haversine distance calculation
-│   └── routers/
-│       ├── __init__.py
-│       └── addresses.py     # All /addresses/* route handlers
+│   ├── crud/                # Modular Data Access Layer
+│   │   ├── __init__.py
+│   │   └── address.py       # CRUD operations for addresses
+│   ├── routers/             # API Route definitions ONLY
+│   │   ├── __init__.py
+│   │   └── addresses.py
+│   ├── main.py              # Application entry point
+│   ├── database.py          # SQLAlchemy setup
+│   ├── models.py            # ORM models
+│   ├── schemas.py           # Pydantic validation models
+│   └── utils.py             # Haversine & helper functions
+├── tests/                   # Automated Test Suite
+│   ├── conftest.py          # Pytest fixtures & DB mocking
+│   ├── test_api_addresses.py # API integration tests
+│   └── test_crud_addresses.py # CRUD unit tests
 ├── requirements.txt
 └── README.md
 ```

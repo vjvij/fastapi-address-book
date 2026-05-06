@@ -55,3 +55,20 @@ def test_crud_delete_address(session):
     db_address = crud.create_address(db=session, address_in=address_in)
     crud.delete_address(db=session, db_address=db_address)
     assert crud.get_address(db=session, address_id=db_address.id) is None
+
+def test_crud_nearby_search_sorting(session):
+    # Further point (Utrecht ~35km from Amsterdam)
+    crud.create_address(session, schemas.AddressCreate(
+        street="Utrecht", city="U", state="U", country="NL", latitude=52.0907, longitude=5.1214
+    ))
+    # Closer point (Amsterdam Central ~2km from search point)
+    crud.create_address(session, schemas.AddressCreate(
+        street="Amsterdam Central", city="A", state="NH", country="NL", latitude=52.3791, longitude=4.9003
+    ))
+    
+    # Search from Amsterdam Dam Square (52.3731, 4.8926)
+    results = crud.get_addresses_within_distance(session, 52.3731, 4.8926, 50)
+    
+    assert len(results) == 2
+    assert results[0].street == "Amsterdam Central"  # Should be first (closer)
+    assert results[1].street == "Utrecht"            # Should be second (further)

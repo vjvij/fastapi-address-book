@@ -112,13 +112,19 @@ def get_addresses_within_distance(
         )
         all_addresses = db.query(models.Address).all()
 
-        nearby = [
-            addr for addr in all_addresses
-            if haversine_distance(latitude, longitude, addr.latitude, addr.longitude) <= distance_km
-        ]
+
+        nearby_with_distances = []
+        for addr in all_addresses:
+            dist = haversine_distance(latitude, longitude, addr.latitude, addr.longitude)
+            if dist <= distance_km:
+                nearby_with_distances.append((addr, dist))
+
+        nearby_with_distances.sort(key=lambda x: x[1])
+
+        nearby = [pair[0] for pair in nearby_with_distances]
 
         logger.info(
-            "Found %d address(es) within %.2f km of (%.4f, %.4f)",
+            "Found %d address(es) within %.2f km of (%.4f, %.4f) (sorted by distance)",
             len(nearby), distance_km, latitude, longitude,
         )
         return nearby
