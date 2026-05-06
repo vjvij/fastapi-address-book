@@ -18,7 +18,8 @@ from typing import List, Annotated
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 
-from app import crud, schemas
+from app.crud import address as crud
+from app import schemas
 from app.database import get_db
 
 logger = logging.getLogger(__name__)
